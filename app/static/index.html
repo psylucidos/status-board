@@ -3,8 +3,99 @@
   <head>
     <meta charset="utf-8">
     <title>Status Board</title>
+    <link rel="stylesheet" href="./css/board.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
   </head>
   <body>
-    
+    <header class="row">
+      <p>v0.0.1</p>
+      <h1>Status Board</h1>
+    </header>
+    <div class="row">
+      <div class="container left">
+        <h3>Droplet Usage</h3>
+        <hr>
+        <canvas id="myChart"></canvas>
+      </div>
+      <div class="container right">
+        <h3>Project Statuses</h3>
+        <hr>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Requests</th>
+            <th>Errors</th>
+            <th>Status</th>
+          </tr>
+          <tr>
+            <td>Project #1</td>
+            <td>13</td>
+            <td>0</td>
+            <td class="green">Online</td>
+          </tr>
+          <tr>
+            <td>Project #2</td>
+            <td>3</td>
+            <td>13</td>
+            <td class="red">Offline</td>
+          </tr>
+          <tr>
+            <td>Project #3</td>
+            <td>0</td>
+            <td>4</td>
+            <td class="green">Online</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="container right">
+        <h3>Project #1</h3>
+        <hr>
+        <div class="child left">
+          <h4>Logs</h4>
+          <p class="log">[Server] Listening on port 3000</p>
+        </div>
+        <div class="child right">
+          <h4>Errors</h4>
+          <p class="log"></p>
+        </div>
+      </div>
+
+      <div class="container right">
+        <h3>Project #2</h3>
+        <hr>
+        <div class="child left">
+          <h4>Logs</h4>
+          <p class="log">[Server] Listening on port 3000</p>
+        </div>
+        <div class="child right">
+          <h4>Errors</h4>
+          <p class="log">Error on line 123: Invalid syntax</p>
+        </div>
+      </div>
+
+      <div class="container right">
+        <h3>Project #3</h3>
+        <hr>
+        <div class="child left">
+          <h4>Logs</h4>
+          <p class="log">[Server] Listening on port 3000</p>
+        </div>
+        <div class="child right">
+          <h4>Errors</h4>
+          <p class="log"></p>
+        </div>
+      </div>
+
+      <div class="container left">
+        <h3>dog meat 2</h3>
+        <p>hello</p>
+      </div>
+    </div>
+
+    <script src="./js/board.js" charset="utf-8"></script>
   </body>
 </html>
