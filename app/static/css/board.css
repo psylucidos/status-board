@@ -38,12 +38,19 @@ header p {
   margin-left: 0 !important;
 }
 
+#page {
+  width: calc(100% - 10px);
+  padding: 5px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .container {
-  display: block;
-  width: calc(50% - 35px);
+  flex: 1;
+  max-width: calc(50% - 30px);
+  min-width: 40vw;
   padding: 10px;
-  margin: 10px;
-  margin-bottom: 0;
+  margin: 5px;
   background-color: white;
 }
 

@@ -52,6 +52,40 @@ function showIncomingChartData(time, cpu, ram, reqs) {
   }
 }
 
+function addProject(name, nOfRequests, nOfErrors, status, nOfLogins, nOfAccounts, nOfSubscriptions, subscriptionValue, logs, errors) {
+  let color = status == 'Online' ? 'green' : 'red';
+  $('#project-status-table tr:last')
+    .after(`<tr>
+            <td>${name}</td>
+            <td>${nOfRequests}</td>
+            <td>${nOfErrors}</td>
+            <td class="${color}">${status}</td>
+          </tr>`);
+
+  let income = nOfSubscriptions === '-' ? '-' : '$'+(nOfSubscriptions * subscriptionValue)+'/month';
+  $('#project-usage-table tr:last')
+    .after(`<tr>
+              <td>${name}</td>
+              <td>${nOfLogins}</td>
+              <td>${nOfAccounts}</td>
+              <td>${nOfSubscriptions}</td>
+              <td>${income}</td>
+            </tr>`);
+
+  $("#page")
+    .append(`<div class="container">
+              <h3>${name}</h3>
+              <hr>
+              <div class="child left">
+                <h4>Logs</h4>
+                <p class="log">${logs}</p>
+              </div>
+              <div class="child right">
+                <h4>Errors</h4>
+                <p class="log">${errors}</p>
+            </div>`);
+}
+
 $(document).ready(function() {
   setInterval(function () {
     let date = new Date();
@@ -63,5 +97,7 @@ $(document).ready(function() {
         ram = 40,
         reqs = 10;
     showIncomingChartData(`${h < 10 ? '0' : ''}${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`, cpu, ram, reqs);
+
+    addProject('test', 10, 3, 'Online', 2, 3, 0, 5, '', '');
   }, 10*1000);
 });
