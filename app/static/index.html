@@ -8,6 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+    <script
+		  src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+		  integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
+		  crossorigin="anonymous"></script>
   </head>
   <body>
     <header class="row">
@@ -23,7 +27,7 @@
       <div class="container right">
         <h3>Project Statuses</h3>
         <hr>
-        <table>
+        <table id="project-status-table">
           <tr>
             <th>Name</th>
             <th>Requests</th>
@@ -91,8 +95,38 @@
       </div>
 
       <div class="container left">
-        <h3>dog meat 2</h3>
-        <p>hello</p>
+        <h3>Usage Data</h3>
+        <hr>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Daily Requests</th>
+            <th>User Accounts</th>
+            <th>Subscribers</th>
+            <th>Income</th>
+          </tr>
+          <tr>
+            <td>Project #1</td>
+            <td>13</td>
+            <td>10</td>
+            <td>3</td>
+            <td>$15/month</td>
+          </tr>
+          <tr>
+            <td>Project #2</td>
+            <td>5</td>
+            <td>3</td>
+            <td>-</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>Project #3</td>
+            <td>43</td>
+            <td>12</td>
+            <td>7</td>
+            <td>$24/month</td>
+          </tr>
+        </table>
       </div>
     </div>
 
