@@ -1,103 +1,113 @@
-
-let chartElement = document.getElementById('myChart').getContext('2d');
+/* global $, Chart */
+const chartElement = document.getElementById('myChart').getContext('2d');
 const labels = [];
 const data = {
-  labels: labels,
+  labels,
   datasets: [{
     label: 'CPU',
     data: [],
     fill: false,
     borderColor: 'rgb(75, 192, 120)',
-    tension: 0.3
+    tension: 0.3,
   }, {
     label: 'RAM',
     data: [],
     fill: false,
     borderColor: 'rgb(75, 192, 192)',
-    tension: 0.3
+    tension: 0.3,
   }, {
     label: 'Requests',
     data: [],
     fill: false,
     borderColor: 'rgb(75, 192, 220)',
-    tension: 0.3
-  }]
+    tension: 0.3,
+  }],
 };
 
-let chart = new Chart(chartElement, {
+const chart = new Chart(chartElement, {
   type: 'line',
-  data: data,
+  data,
 });
 
-function removeData(chart) {
-  chart.data.labels.shift();
-  chart.data.datasets.forEach((dataset) => {
+function removeData(targetChart) {
+  targetChart.data.labels.shift();
+  targetChart.data.datasets.forEach((dataset) => {
     dataset.data.shift();
   });
-  chart.update();
+  targetChart.update();
 }
 
-function addData(chart, label, data) {
-  chart.data.labels.push(label);
-  chart.data.datasets.forEach((dataset, i) => {
-    dataset.data.push(data[i]);
+function addData(targetChart, newLabel, newData) {
+  targetChart.data.labels.push(newLabel);
+  targetChart.data.datasets.forEach((dataset, i) => {
+    dataset.data.push(newData[i]);
   });
-  chart.update();
+  targetChart.update();
 }
 
-function showIncomingChartData(time, cpu, ram, reqs) {
-  addData(chart, time, [cpu, ram, reqs]);
-  if (chart.data.labels.length >= 360) {
+function showIncomingChartData(targetChart, time, cpu, ram, reqs) {
+  addData(targetChart, time, [cpu, ram, reqs]);
+  if (targetChart.data.labels.length >= 360) {
     removeData(chart);
   }
 }
 
-function addProject(name, nOfRequests, nOfErrors, status, nOfLogins, nOfAccounts, nOfSubscriptions, subscriptionValue, logs, errors) {
-  let color = status == 'Online' ? 'green' : 'red';
+function addProject(name, info) {
+  const color = info.status === 'Online' ? 'green' : 'red';
   $('#project-status-table tr:last')
     .after(`<tr>
             <td>${name}</td>
-            <td>${nOfRequests}</td>
-            <td>${nOfErrors}</td>
-            <td class="${color}">${status}</td>
+            <td>${info.nOfRequests}</td>
+            <td>${info.nOfErrors}</td>
+            <td class="${color}">${info.status}</td>
           </tr>`);
 
-  let income = nOfSubscriptions === '-' ? '-' : '$'+(nOfSubscriptions * subscriptionValue)+'/month';
+  const income = info.nOfSubscriptions === '-' ? '-' : `$${info.nOfSubscriptions * info.subscriptionValue}/month`;
   $('#project-usage-table tr:last')
     .after(`<tr>
               <td>${name}</td>
-              <td>${nOfLogins}</td>
-              <td>${nOfAccounts}</td>
-              <td>${nOfSubscriptions}</td>
+              <td>${info.nOfLogins}</td>
+              <td>${info.nOfAccounts}</td>
+              <td>${info.nOfSubscriptions}</td>
               <td>${income}</td>
             </tr>`);
 
-  $("#page")
+  $('#page')
     .append(`<div class="container">
               <h3>${name}</h3>
               <hr>
               <div class="child left">
                 <h4>Logs</h4>
-                <p class="log">${logs}</p>
+                <p class="log">${info.logs}</p>
               </div>
               <div class="child right">
                 <h4>Errors</h4>
-                <p class="log">${errors}</p>
+                <p class="log">${info.errorLogs}</p>
             </div>`);
 }
 
-$(document).ready(function() {
-  setInterval(function () {
-    let date = new Date();
-    let h = date.getHours(),
-        m = date.getMinutes();
-        s = date.getSeconds();
+$(document).ready(() => {
+  setInterval(() => {
+    const date = new Date();
+    const h = date.getHours();
+    const m = date.getMinutes();
+    const s = date.getSeconds();
 
-    let cpu = 30,
-        ram = 40,
-        reqs = 10;
-    showIncomingChartData(`${h < 10 ? '0' : ''}${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`, cpu, ram, reqs);
+    const cpu = 30;
+    const ram = 40;
+    const reqs = 10;
+    showIncomingChartData(chart, `${h < 10 ? '0' : ''}${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`, cpu, ram, reqs);
 
-    addProject('test', 10, 3, 'Online', 2, 3, 0, 5, '', '');
-  }, 10*1000);
+    addProject('test', {
+      nOfRequests: 10,
+      nOfErrors: 3,
+      status: 'Online',
+      nOfLogins: 4,
+      nOfAccounts: 5,
+      nOfSubscriptions: 1,
+      subscriptionValue: 3,
+      logs: '',
+      errorLogs: '',
+    });
+  }, 10 * 1000);
 });
