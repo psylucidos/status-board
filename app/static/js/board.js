@@ -1,4 +1,6 @@
 /* global $, Chart */
+const CHARTLENGTH = 10;
+
 const chartElement = document.getElementById('myChart').getContext('2d');
 const labels = [];
 const data = {
@@ -29,7 +31,7 @@ const chart = new Chart(chartElement, {
   data,
 });
 
-function removeData(targetChart) {
+function removeChartData(targetChart) {
   targetChart.data.labels.shift();
   targetChart.data.datasets.forEach((dataset) => {
     dataset.data.shift();
@@ -37,7 +39,7 @@ function removeData(targetChart) {
   targetChart.update();
 }
 
-function addData(targetChart, newLabel, newData) {
+function addChartData(targetChart, newLabel, newData) {
   targetChart.data.labels.push(newLabel);
   targetChart.data.datasets.forEach((dataset, i) => {
     dataset.data.push(newData[i]);
@@ -46,25 +48,25 @@ function addData(targetChart, newLabel, newData) {
 }
 
 function showIncomingChartData(targetChart, time, cpu, ram, reqs) {
-  addData(targetChart, time, [cpu, ram, reqs]);
-  if (targetChart.data.labels.length >= 360) {
-    removeData(chart);
+  addChartData(targetChart, time, [cpu, ram, reqs]);
+  if (targetChart.data.labels.length >= CHARTLENGTH) {
+    removeChartData(chart);
   }
 }
 
 function addProject(name, info) {
   const color = info.status === 'Online' ? 'green' : 'red';
   $('#project-status-table tr:last')
-    .after(`<tr>
-            <td>${name}</td>
-            <td>${info.nOfRequests}</td>
-            <td>${info.nOfErrors}</td>
-            <td class="${color}">${info.status}</td>
-          </tr>`);
+    .after(`<tr id="status-project-${name}">
+              <td>${name}</td>
+              <td>${info.nOfRequests}</td>
+              <td>${info.nOfErrors}</td>
+              <td class="${color}">${info.status}</td>
+            </tr>`);
 
   const income = info.income === '-' ? '-' : `$${info.income}/month`;
   $('#project-usage-table tr:last')
-    .after(`<tr>
+    .after(`<tr id="usage-project-${name}">
               <td>${name}</td>
               <td>${info.nOfLogins}</td>
               <td>${info.nOfAccounts}</td>
@@ -72,7 +74,7 @@ function addProject(name, info) {
             </tr>`);
 
   $('#page')
-    .append(`<div class="container">
+    .append(`<div class="container" id="logs-project-${name}">
               <h3>${name}</h3>
               <hr>
               <div class="child left">
@@ -83,6 +85,34 @@ function addProject(name, info) {
                 <h4>Errors</h4>
                 <p class="log">${info.errorLogs}</p>
             </div>`);
+}
+
+function updateProject(name, newInfo) {
+  const color = newInfo.status === 'Online' ? 'green' : 'red';
+  $(`#status-project-${name}`)
+    .html(`<td>${name}</td>
+            <td>${newInfo.nOfRequests}</td>
+            <td>${newInfo.nOfErrors}</td>
+            <td class="${color}">${newInfo.status}</td>`);
+
+  const income = newInfo.income === '-' ? '-' : `$${newInfo.income}/month`;
+  $(`#usage-project-${name}`)
+    .html(`<td>${name}</td>
+           <td>${newInfo.nOfLogins}</td>
+           <td>${newInfo.nOfAccounts}</td>
+           <td>${income}</td>`);
+
+  $(`#logs-project-${name}`)
+    .html(`<h3>${name}</h3>
+           <hr>
+           <div class="child left">
+             <h4>Logs</h4>
+             <p class="log">${newInfo.logs}</p>
+           </div>
+           <div class="child right">
+             <h4>Errors</h4>
+             <p class="log">${newInfo.errorLogs}</p>
+           </div>`);
 }
 
 $(document).ready(() => {
@@ -107,5 +137,18 @@ $(document).ready(() => {
       logs: '',
       errorLogs: '',
     });
+
+    setTimeout(() => {
+      updateProject('test', {
+        nOfRequests: 11,
+        nOfErrors: 3,
+        status: 'Offline',
+        nOfLogins: 4,
+        nOfAccounts: 5,
+        income: '-',
+        logs: '',
+        errorLogs: 'big error!',
+      });
+    }, 2 * 1000);
   }, 10 * 1000);
 });
