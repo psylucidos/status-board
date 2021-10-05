@@ -11,6 +11,7 @@
   "author": "psylucidos",
   "license": "MIT",
   "dependencies": {
+    "@koa/router": "^10.1.1",
     "koa": "^2.13.3",
     "koa-static": "^5.0.0"
   },
