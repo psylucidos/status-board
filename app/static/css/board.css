@@ -79,9 +79,9 @@ header p {
   margin-left: 0;
 }
 
-@media (max-width: 550px) {
+@media (max-width: 900px) {
   .container {
-    width: calc(100% - 40px);
+    min-width: calc(100% - 30px);
   }
 }
 

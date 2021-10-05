@@ -62,13 +62,12 @@ function addProject(name, info) {
             <td class="${color}">${info.status}</td>
           </tr>`);
 
-  const income = info.nOfSubscriptions === '-' ? '-' : `$${info.nOfSubscriptions * info.subscriptionValue}/month`;
+  const income = info.income === '-' ? '-' : `$${info.income}/month`;
   $('#project-usage-table tr:last')
     .after(`<tr>
               <td>${name}</td>
               <td>${info.nOfLogins}</td>
               <td>${info.nOfAccounts}</td>
-              <td>${info.nOfSubscriptions}</td>
               <td>${income}</td>
             </tr>`);
 
@@ -104,8 +103,7 @@ $(document).ready(() => {
       status: 'Online',
       nOfLogins: 4,
       nOfAccounts: 5,
-      nOfSubscriptions: 1,
-      subscriptionValue: 3,
+      income: '-',
       logs: '',
       errorLogs: '',
     });
