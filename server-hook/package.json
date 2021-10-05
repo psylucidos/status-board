@@ -1,0 +1,25 @@
+{
+  "name": "status-board-server-hook",
+  "version": "0.0.1",
+  "description": "Simple server status hook for status-board.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint-server": "npx eslint ./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/psylucidos/status-board.git"
+  },
+  "author": "psylucidos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/psylucidos/status-board/issues"
+  },
+  "homepage": "https://github.com/psylucidos/status-board#readme",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.2"
+  }
+}
