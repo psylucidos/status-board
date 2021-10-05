@@ -1,0 +1,99 @@
+
+body {
+  margin: 0;
+  background-color: #EEEEEE;
+}
+
+hr {
+  color: #EEEEEE;
+}
+
+p, h1, h2, h3, h4, a, td, th {
+  font-family: 'Nunito', sans-serif;
+  margin: 0;
+}
+
+header {
+  background-color: #1e90ff;
+  padding: 10px;
+  color: white;
+}
+
+header h3 {
+  margin: 0;
+  padding: 1vh;
+}
+
+header p {
+  float: right;
+  padding: 1vh;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+  margin-left: 0 !important;
+}
+
+#page {
+  width: calc(100% - 10px);
+  padding: 5px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.container {
+  flex: 1;
+  max-width: calc(50% - 30px);
+  min-width: 40vw;
+  padding: 10px;
+  margin: 5px;
+  background-color: white;
+}
+
+.child {
+  display: block;
+  width: calc(50%);
+}
+
+.child h4 {
+  margin: 2px;
+}
+
+.child.right h4 {
+  margin-left: 10px;
+}
+
+.log {
+  background-color: #CCCCCC;
+  padding: 10px;
+  margin-left: 10px;
+  min-height: 15px;
+  font-family: monospace;
+}
+
+.child.left .log {
+  margin-left: 0;
+}
+
+@media (max-width: 900px) {
+  .container {
+    min-width: calc(100% - 30px);
+  }
+}
+
+td, th {
+  padding: 5px;
+  padding-right: 3vw;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
