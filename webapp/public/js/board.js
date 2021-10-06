@@ -64,13 +64,11 @@ function addProject(name, info) {
               <td class="${color}">${info.status}</td>
             </tr>`);
 
-  const income = info.income === '-' ? '-' : `$${info.income}/month`;
   $('#project-usage-table tr:last')
     .after(`<tr id="usage-project-${name}">
               <td>${name}</td>
               <td>${info.nOfLogins}</td>
               <td>${info.nOfAccounts}</td>
-              <td>${income}</td>
             </tr>`);
 
   $('#page')
@@ -95,12 +93,10 @@ function updateProject(name, newInfo) {
             <td>${newInfo.nOfErrors}</td>
             <td class="${color}">${newInfo.status}</td>`);
 
-  const income = newInfo.income === '-' ? '-' : `$${newInfo.income}/month`;
   $(`#usage-project-${name}`)
     .html(`<td>${name}</td>
            <td>${newInfo.nOfLogins}</td>
-           <td>${newInfo.nOfAccounts}</td>
-           <td>${income}</td>`);
+           <td>${newInfo.nOfAccounts}</td>`);
 
   $(`#logs-project-${name}`)
     .html(`<h3>${name}</h3>
@@ -145,7 +141,6 @@ $(document).ready(() => {
         status: 'Offline',
         nOfLogins: 4,
         nOfAccounts: 5,
-        income: '-',
         logs: '',
         errorLogs: 'big error!',
       });

@@ -12,7 +12,6 @@ const info = {
   status: 'Offline',
   nOfLogins: 0,
   nOfAccounts: 0,
-  income: '-',
   logs: '',
   errorLogs: '',
 };
@@ -63,14 +62,15 @@ async function init(newConfig) {
     throw new Error('No target server specified!');
   } else if (!config.target.includes('http://')) {
     throw new Error('Target server not http, please use \'http://\' prefix!');
-  } else if (!config.name) {
+  } else if (!config.projectName) {
     throw new Error('No project name provided!');
   } else if (!config.interval) {
     throw new Error('No refresh interval provided!');
   }
 
   try {
-    const response = await axios.post(`${config.target}/ping`, info);
+    console.log(`${config.target}/update/${config.projectName}`);
+    const response = await axios.post(`${config.target}/update/${config.projectName}`, info);
 
     if (response.status !== 200) {
       throw new Error(`Invalid target response of code ${response.status}`);
@@ -81,7 +81,7 @@ async function init(newConfig) {
 
   setInterval(() => {
     axios
-      .post(`${config.target}/ping`, info)
+      .post(`${config.target}/update/${config.projectName}`, info)
       .catch((err) => {
         throw err;
       });
