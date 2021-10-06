@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint-site": "npx eslint ./static/js/board.js",
-    "lint-server": "npx eslint ./index.js"
+    "dev": "node index.js",
+    "lint": "npx eslint ./"
   },
   "author": "psylucidos",
   "license": "MIT",
