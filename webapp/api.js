@@ -1,6 +1,6 @@
-const Router = require('@koa/router');
-
+const Router = require('koa-joi-router');
 const router = new Router();
+const Joi = Router.Joi;
 
 router.prefix('/api');
 
@@ -16,42 +16,27 @@ router.get('/projects', async (ctx) => {
   ctx.body = projects;
 });
 
-router.post('/update/:project', async (ctx) => {
-  // validate post data
-
-  ctx.validateBody('nOfRequests')
-    .required('Number of requests required')
-    .isNumber();
-
-  ctx.validateBody('nOfErrors')
-    .required('Number of errors required')
-    .isNumber();
-
-  ctx.validateBody('nOfLogins')
-    .required('Number of logins required')
-    .isNumber();
-
-  ctx.validateBody('nOfAccounts')
-    .required('Number of accounts required')
-    .isNumber();
-
-  ctx.validateBody('status')
-    .required('Project status required')
-    .isString();
-
-  ctx.validateBody('logs')
-    .required('Project logs required')
-    .isString();
-
-  ctx.validateBody('errorLogs')
-    .required('Project error logs required')
-    .isString();
-
-  const projectName = ctx.params.project;
-
-  projects[projectName] = ctx.vals;
-
-  ctx.status = 200;
+router.route({
+  method: 'post',
+  path: '/update/:project',
+  validate: {
+    type: 'json',
+    body: {
+      nOfRequests: Joi.number(),
+      nOfErrors: Joi.number(),
+      nOfLogins: Joi.number(),
+      nOfAccounts: Joi.number(),
+      status: Joi.string().allow(null, ''),
+      logs: Joi.string().allow(null, ''),
+      errorLogs: Joi.string().allow(null, ''),
+    },
+  },
+  handler: async (ctx) => {
+    const projectName = ctx.params.project;
+    console.log(ctx.request.body);
+    projects[projectName] = ctx.request.body;
+    ctx.status = 200;
+  }
 });
 
 module.exports = router;

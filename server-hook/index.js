@@ -59,33 +59,37 @@ async function init(newConfig) {
   config.interval = newConfig.interval;
 
   if (!config.target) {
-    throw new Error('No target server specified!');
+    Promise.reject(new Error('No target server specified!'));
   } else if (!config.target.includes('http://')) {
-    throw new Error('Target server not http, please use \'http://\' prefix!');
+    Promise.reject(new Error('Target server not http, please use \'http://\' prefix!'));
+  } else if (config.target[config.target.length - 1] === '/') {
+    Promise.reject(new Error('Target server cannot end with \'/\'!'));
   } else if (!config.projectName) {
-    throw new Error('No project name provided!');
+    Promise.reject(new Error('No project name provided!'));
   } else if (!config.interval) {
-    throw new Error('No refresh interval provided!');
+    Promise.reject(new Error('No refresh interval provided!'));
   }
 
   try {
     console.log(`${config.target}/update/${config.projectName}`);
-    const response = await axios.post(`${config.target}/update/${config.projectName}`, info);
+    console.log(JSON.stringify(info));
+    const response = await axios.post(`${config.target}/update/${config.projectName}`, JSON.stringify(info));
 
     if (response.status !== 200) {
-      throw new Error(`Invalid target response of code ${response.status}`);
+      Promise.reject(new Error(`Invalid target response of code ${response.status}`));
     }
   } catch (err) {
-    throw new Error(`Error connecting to target: ${err}`);
+    Promise.reject(new Error(`Error connecting to target: ${err}`));
   }
 
   setInterval(() => {
     axios
       .post(`${config.target}/update/${config.projectName}`, info)
       .catch((err) => {
-        throw err;
+        console.error(err);
       });
   }, config.interval * 1000);
+  Promise.resolve();
 }
 
 module.exports = {
