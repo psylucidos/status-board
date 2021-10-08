@@ -33,6 +33,8 @@ router.route({
       logs: Joi.string().allow(null, ''),
       errorLogs: Joi.string().allow(null, ''),
       interval: Joi.number(),
+      cpuUsage: Joi.number(),
+      memoryUsage: Joi.number(),
     },
   },
   handler: async (ctx) => {

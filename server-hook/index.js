@@ -71,7 +71,15 @@ async function init(newConfig) {
     Promise.reject(new Error('No refresh interval provided!'));
   }
 
+  let prevCPUUsage = { user: 0, system: 0 };
+
   try {
+    let cpuUsage = process.cpuUsage(prevCPUUsage);
+    prevCPUUsage = cpuUsage;
+
+    info.cpuUsage = cpuUsage.user / 10000;
+    info.memoryUsage = process.memoryUsage().heapUsed / 1000 / 1000;
+
     const response = await axios.post(`${config.target}/update/${config.projectName}`, info);
 
     if (response.status !== 200) {
@@ -82,11 +90,16 @@ async function init(newConfig) {
   }
 
   setInterval(() => {
+    info.cpuUsage = prevCPUUsage.user / 10000;
+    info.memoryUsage = process.memoryUsage().heapUsed / 1000 / 1000;
     axios
       .post(`${config.target}/update/${config.projectName}`, info)
       .catch((err) => {
         console.error(err);
       });
+
+    let cpuUsage = process.cpuUsage(prevCPUUsage);
+    prevCPUUsage = cpuUsage;
   }, config.interval * 1000);
   Promise.resolve();
 }

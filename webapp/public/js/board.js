@@ -137,15 +137,17 @@ function updateProject(name, newInfo) {
 const projects = [];
 
 function updatePage() {
-  const cpu = 30;
-  const ram = 40;
-  const reqs = 10;
-  showIncomingChartData(chart, pretifyTime(new Date()), cpu, ram, reqs);
-
   $.ajax({ url: 'http://localhost:3000/api/projects', success: (res) => {
     console.log(res);
+    let cpuUsage = 0;
+    let memoryUsage = 0;
+    let requests = 0;
+
     for (let project in res) {
       if (res.hasOwnProperty(project)) {
+        cpuUsage = (res[project].cpuUsage);
+        memoryUsage = (res[project].memoryUsage);
+        requests = (res[project].nOfRequests);
         if (projects.includes(project)) {
           updateProject(project, res[project]);
         } else {
@@ -154,6 +156,8 @@ function updatePage() {
         }
       }
     }
+    console.log(cpuUsage, memoryUsage, requests);
+    showIncomingChartData(chart, pretifyTime(new Date()), cpuUsage, memoryUsage, requests);
   }, error: (err) => {
     console.error(err);
   }});
