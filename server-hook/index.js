@@ -9,11 +9,12 @@ const config = {
 const info = {
   nOfRequests: 0,
   nOfErrors: 0,
-  status: 'Offline',
+  status: 'Online',
   nOfLogins: 0,
   nOfAccounts: 0,
   logs: '',
   errorLogs: '',
+  interval: 60,
 };
 
 async function request() {
@@ -71,9 +72,7 @@ async function init(newConfig) {
   }
 
   try {
-    console.log(`${config.target}/update/${config.projectName}`);
-    console.log(JSON.stringify(info));
-    const response = await axios.post(`${config.target}/update/${config.projectName}`, JSON.stringify(info));
+    const response = await axios.post(`${config.target}/update/${config.projectName}`, info);
 
     if (response.status !== 200) {
       Promise.reject(new Error(`Invalid target response of code ${response.status}`));
