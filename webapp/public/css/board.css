@@ -85,9 +85,12 @@ header p {
   }
 }
 
+table {
+  width: 100%;
+}
+
 td, th {
-  padding: 5px;
-  padding-right: 3vw;
+  text-align: center;
 }
 
 .green {
