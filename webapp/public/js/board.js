@@ -1,6 +1,6 @@
 /* global $, Chart */
 const CHARTLENGTH = 10;
-const UPDATEINTERVAL = 60 * 1000;
+const UPDATEINTERVAL = 2 * 1000;
 
 function pretifyNum(n) {
   return `${n < 10 ? '0' : ''}${n}`;
@@ -22,6 +22,12 @@ function pretifyDate(date) {
   return `${pretifyNum(d)}/${pretifyNum(m)}/${pretifyNum(y)}`;
 }
 
+function arrAverage(arr) {
+  let x = 0;
+  arr.forEach((n) => x += n);
+  return x / arr.length;
+}
+
 const chartElement = document.getElementById('myChart').getContext('2d');
 const labels = [];
 const data = {
@@ -30,19 +36,19 @@ const data = {
     label: 'CPU',
     data: [],
     fill: false,
-    borderColor: 'rgb(75, 192, 120)',
+    borderColor: 'rgb(75, 192, 255)',
     tension: 0.3,
   }, {
     label: 'RAM',
     data: [],
     fill: false,
-    borderColor: 'rgb(75, 192, 192)',
+    borderColor: 'rgb(75, 192, 225)',
     tension: 0.3,
   }, {
     label: 'Requests',
     data: [],
     fill: false,
-    borderColor: 'rgb(75, 192, 220)',
+    borderColor: 'rgb(75, 192, 195)',
     tension: 0.3,
   }],
 };
@@ -57,7 +63,6 @@ function removeChartData(targetChart) {
   targetChart.data.datasets.forEach((dataset) => {
     dataset.data.shift();
   });
-  targetChart.update();
 }
 
 function addChartData(targetChart, newLabel, newData) {
@@ -65,17 +70,36 @@ function addChartData(targetChart, newLabel, newData) {
   targetChart.data.datasets.forEach((dataset, i) => {
     dataset.data.push(newData[i]);
   });
-  targetChart.update();
 }
 
-function showIncomingChartData(targetChart, time, cpu, ram, reqs) {
-  addChartData(targetChart, time, [cpu, ram, reqs]);
+function showIncomingChartData(targetChart, time, cpu, ram, reqs, responseTimes) {
+  let dataArr = [cpu, ram, reqs];
+  responseTimes.forEach((item) => {
+    dataArr.push(item);
+  });
+
+  addChartData(targetChart, time, dataArr);
   if (targetChart.data.labels.length >= CHARTLENGTH) {
     removeChartData(chart);
   }
+
+  targetChart.update();
+}
+
+function addProjectToChart(targetChart, projectName) {
+  const nOfProjects = targetChart.data.datasets.length - 3;
+  targetChart.data.datasets.push({
+    label: `${projectName} Response Time`,
+    data: [0],
+    fill: false,
+    borderColor: `rgb(75, 192, ${195 - (30 * (nOfProjects + 1))})`,
+    tension: 0.3,
+  })
 }
 
 function addProject(name, info) {
+  addProjectToChart(chart, name);
+
   const color = info.status === 'Online' ? 'green' : 'red';
 
   const updateTime = pretifyTime(new Date(info.lastUpdate));
@@ -138,16 +162,21 @@ const projects = [];
 
 function updatePage() {
   $.ajax({ url: 'http://localhost:3000/api/projects', success: (res) => {
-    console.log(res);
     let cpuUsage = 0;
     let memoryUsage = 0;
     let requests = 0;
+    let responseTimes = [];
 
     for (let project in res) {
       if (res.hasOwnProperty(project)) {
         cpuUsage = (res[project].cpuUsage);
         memoryUsage = (res[project].memoryUsage);
         requests = (res[project].nOfRequests);
+        if (res[project].responseTimes.length > 0) {
+          responseTimes.push(arrAverage(res[project].responseTimes))
+        } else {
+          responseTimes.push(0);
+        }
         if (projects.includes(project)) {
           updateProject(project, res[project]);
         } else {
@@ -156,8 +185,8 @@ function updatePage() {
         }
       }
     }
-    console.log(cpuUsage, memoryUsage, requests);
-    showIncomingChartData(chart, pretifyTime(new Date()), cpuUsage, memoryUsage, requests);
+
+    showIncomingChartData(chart, pretifyTime(new Date()), cpuUsage, memoryUsage, requests, responseTimes);
   }, error: (err) => {
     console.error(err);
   }});
@@ -167,5 +196,5 @@ $(document).ready(() => {
   updatePage();
   setInterval(() => {
     updatePage();
-  }, 10 * 1000);
+  }, UPDATEINTERVAL);
 });

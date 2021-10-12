@@ -35,11 +35,11 @@ router.route({
       interval: Joi.number(),
       cpuUsage: Joi.number(),
       memoryUsage: Joi.number(),
+      responseTimes: Joi.array().items(Joi.number()),
     },
   },
   handler: async (ctx) => {
     const projectName = ctx.params.project;
-    console.log(ctx.request.body);
     projects[projectName] = ctx.request.body;
     projects[projectName].lastUpdate = new Date().getTime();
     ctx.status = 200;

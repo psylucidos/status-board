@@ -15,10 +15,12 @@ const info = {
   logs: '',
   errorLogs: '',
   interval: 60,
+  responseTimes: [],
 };
 
-async function request() {
+async function request(responseTime) {
   info.nOfRequests += 1;
+  info.responseTimes.push(responseTime);
 }
 
 async function setStatus(status) {
@@ -34,13 +36,6 @@ async function setAccounts(nOfAccounts) {
     throw new Error('Number of accounts provided is not a number!');
   }
   info.nOfAccounts = nOfAccounts;
-}
-
-async function setIncome(income) {
-  if (!Number.isNaN(income)) {
-    throw new Error('Income provided is not a number!');
-  }
-  info.income = income;
 }
 
 async function log(msg) {
@@ -98,6 +93,8 @@ async function init(newConfig) {
         console.error(err);
       });
 
+    info.nOfRequests = 0;
+    info.responseTimes = [];
     let cpuUsage = process.cpuUsage(prevCPUUsage);
     prevCPUUsage = cpuUsage;
   }, config.interval * 1000);
@@ -110,7 +107,6 @@ module.exports = {
   setStatus,
   login,
   setAccounts,
-  setIncome,
   log,
   logErr,
 };
