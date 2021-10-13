@@ -72,7 +72,7 @@ async function init(newConfig) {
     let cpuUsage = process.cpuUsage(prevCPUUsage);
     prevCPUUsage = cpuUsage;
 
-    info.cpuUsage = cpuUsage.user / 10000;
+    info.cpuUsage = cpuUsage.user / 100000;
     info.memoryUsage = process.memoryUsage().heapUsed / 1000 / 1000;
 
     const response = await axios.post(`${config.target}/update/${config.projectName}`, info);
@@ -85,7 +85,7 @@ async function init(newConfig) {
   }
 
   setInterval(() => {
-    info.cpuUsage = prevCPUUsage.user / 10000;
+    info.cpuUsage = prevCPUUsage.user / 100000;
     info.memoryUsage = process.memoryUsage().heapUsed / 1000 / 1000;
     axios
       .post(`${config.target}/update/${config.projectName}`, info)
