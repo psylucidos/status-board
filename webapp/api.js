@@ -47,9 +47,10 @@ router.route({
 });
 
 setInterval(() => {
-  for (let project in projects) {
-    if (projects.hasOwnProperty(project) &&
-        projects[project].status === 'Online') {
+  const projectNames = Object.keys(projects);
+  for (let i = 0; i < projectNames.length; i += 1) {
+    const project = projectNames[i];
+    if (projects[project].status === 'Online') {
       const target = projects[project];
       const minUpdateTime = (new Date().getTime() - (target.interval * 1000));
       if (target.lastUpdate < minUpdateTime + MAXTIMOUT) {
