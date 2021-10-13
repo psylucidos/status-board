@@ -1,1 +1,0 @@
-const hook = require('./index');
