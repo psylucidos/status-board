@@ -1,5 +1,37 @@
 ## Server-hook
 A simple script that posts project data to an API.
+### Example Usage
+```javascript
+// setup server and import hook
+const Koa = require('koa');
+const hook = require('server-hook');
+
+const app = new Koa();
+const api = require('./api');
+hook.init({ // initialise hook
+  target: 'http://example.com:3000/api',
+  projectName: 'test',
+  interval: 60,
+})
+
+app.on('error', err => {
+  hook.errLog(err);
+});
+
+app
+  .use(async (ctx, next) => {
+    // create simple response time recorder
+    const start = Date.now();
+    await next();
+    const ms = Date.now() - start;
+    hook.request(ms); // update hook
+  })
+  .use(api.middleware());
+
+app.listen(8080);
+hook.setStatus('Online');
+hook.log('Listening on 8080');
+```
 ### Functions
 #### .init(config)
 *config*: `{
