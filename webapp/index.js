@@ -13,4 +13,4 @@ app
 
 app.listen(process.env.PORT);
 
-console.log('listening on port 3000'); // eslint-disable-line
+console.log(`listening on port ${process.env.PORT}`); // eslint-disable-line
