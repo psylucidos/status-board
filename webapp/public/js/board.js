@@ -1,6 +1,6 @@
 /* global $, Chart */
 
-const UPDATEINTERVAL = 5 * 1000;
+const UPDATEINTERVAL = 60 * 1000;
 const CHARTLENGTH = 20;
 
 const data = {

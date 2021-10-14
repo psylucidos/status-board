@@ -5,8 +5,6 @@ const { Joi } = Router;
 
 router.prefix('/api');
 
-const MAXTIMOUT = 10 * 1000;
-const TIMEOUTCHECKINTERVAL = 60 * 1000;
 const projects = {};
 
 router.get('/', async (ctx) => {
@@ -53,11 +51,11 @@ setInterval(() => {
     if (projects[project].status === 'Online') {
       const target = projects[project];
       const minUpdateTime = (new Date().getTime() - (target.interval * 1000));
-      if (target.lastUpdate < minUpdateTime + MAXTIMOUT) {
+      if (target.lastUpdate < minUpdateTime + process.env.MAXTIMOUT) {
         projects[project].status = 'Offline';
       }
     }
   }
-}, TIMEOUTCHECKINTERVAL);
+}, process.env.TIMEOUTCHECKINTERVAL);
 
 module.exports = router;
