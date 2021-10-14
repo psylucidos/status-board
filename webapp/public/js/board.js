@@ -1,52 +1,32 @@
 /* global $, Chart */
-const CHARTLENGTH = 10;
+
 const UPDATEINTERVAL = 60 * 1000;
+const CHARTLENGTH = 20;
 
-function pretifyNum(n) {
-  return `${n < 10 ? '0' : ''}${n}`;
-}
-
-function pretifyTime(date) {
-  const h = date.getHours();
-  const m = date.getMinutes();
-  const s = date.getSeconds();
-
-  return `${pretifyNum(h)}:${pretifyNum(m)}:${pretifyNum(s)}`;
-}
-
-function pretifyDate(date) {
-  const y = date.getFullYear();
-  const m = date.getMonth() + 1;
-  const d = date.getDate();
-
-  return `${pretifyNum(d)}/${pretifyNum(m)}/${pretifyNum(y)}`;
-}
-
-const chartElement = document.getElementById('myChart').getContext('2d');
-const labels = [];
 const data = {
-  labels,
+  labels: [],
   datasets: [{
     label: 'CPU',
     data: [],
     fill: false,
-    borderColor: 'rgb(75, 192, 120)',
+    borderColor: 'rgb(75, 192, 255)',
     tension: 0.3,
   }, {
     label: 'RAM',
     data: [],
     fill: false,
-    borderColor: 'rgb(75, 192, 192)',
+    borderColor: 'rgb(75, 192, 225)',
     tension: 0.3,
   }, {
     label: 'Requests',
     data: [],
     fill: false,
-    borderColor: 'rgb(75, 192, 220)',
+    borderColor: 'rgb(75, 192, 195)',
     tension: 0.3,
   }],
 };
 
+const chartElement = document.getElementById('usage-chart').getContext('2d');
 const chart = new Chart(chartElement, {
   type: 'line',
   data,
@@ -57,7 +37,6 @@ function removeChartData(targetChart) {
   targetChart.data.datasets.forEach((dataset) => {
     dataset.data.shift();
   });
-  targetChart.update();
 }
 
 function addChartData(targetChart, newLabel, newData) {
@@ -65,32 +44,84 @@ function addChartData(targetChart, newLabel, newData) {
   targetChart.data.datasets.forEach((dataset, i) => {
     dataset.data.push(newData[i]);
   });
-  targetChart.update();
 }
 
 function showIncomingChartData(targetChart, time, cpu, ram, reqs) {
-  addChartData(targetChart, time, [cpu, ram, reqs]);
+  const dataArr = [cpu, ram, reqs];
+
+  addChartData(targetChart, time, dataArr);
   if (targetChart.data.labels.length >= CHARTLENGTH) {
     removeChartData(chart);
   }
+
+  targetChart.update('none');
 }
 
+const projectNames = [];
+const avgResTimes = {};
+
+/* Function converts number into two digit number with leading 0 */
+function pretifyNum(n) {
+  return `${n < 10 ? '0' : ''}${n}`;
+}
+
+/* Function generates pretified time */
+function pretifyTime(date) {
+  const h = date.getHours();
+  const m = date.getMinutes();
+  const s = date.getSeconds();
+
+  return `${pretifyNum(h)}:${pretifyNum(m)}:${pretifyNum(s)}`;
+}
+
+/* Function generates pretified time of only hours and minutes */
+function pretifyTimeShort(date) {
+  const h = date.getHours();
+  const m = date.getMinutes();
+
+  return `${pretifyNum(h)}:${pretifyNum(m)}`;
+}
+
+/* Function generates pretified date */
+function pretifyDate(date) {
+  const m = date.getMonth() + 1;
+  const d = date.getDate();
+
+  return `${pretifyNum(d)}/${pretifyNum(m)}`;
+}
+
+/* Function averages contents of numerical array */
+function arrAverage(arr) {
+  let sum = 0;
+  arr.forEach((n) => {
+    sum += n;
+  });
+  return sum / arr.length;
+}
+
+/* Function adds project to board and displays status */
 function addProject(name, info) {
   const color = info.status === 'Online' ? 'green' : 'red';
 
-  const updateTime = pretifyTime(new Date(info.lastUpdate));
+  // create pretified time and date
+  const updateTime = pretifyTimeShort(new Date(info.lastUpdate));
   const updateDate = pretifyDate(new Date(info.lastUpdate));
 
+  // print '-' if reponse time is null
+  const responseTime = arrAverage(avgResTimes[name]);
+  const responseTimePrint = Number.isNaN(responseTime) ? '-' : responseTime;
+
   $('#project-status-table tr:last')
-  .after(`<tr id="status-project-${name}">
-            <td>${name}</td>
-            <td>${info.nOfRequests}</td>
-            <td>${info.nOfErrors}</td>
-            <td class="${color}">${info.status}</td>
-            <td>${updateTime} ${updateDate}</td>
-            <td>${info.nOfLogins}</td>
-            <td>${info.nOfAccounts}</td>
-          </tr>`);
+    .after(`<tr id="status-project-${name}">
+              <td>${name}</td>
+              <td>${info.nOfRequests}</td>
+              <td>${info.nOfErrors}</td>
+              <td class="${color}">${info.status}</td>
+              <td>${updateTime} ${updateDate}</td>
+              <td>${info.nOfLogins}</td>
+              <td>${info.nOfAccounts}</td>
+              <td>${responseTimePrint}</td>
+            </tr>`);
 
   $('#page')
     .append(`<div class="container" id="logs-project-${name}">
@@ -106,11 +137,17 @@ function addProject(name, info) {
             </div>`);
 }
 
+/* Function updates project to board and displays status */
 function updateProject(name, newInfo) {
   const color = newInfo.status === 'Online' ? 'green' : 'red';
 
-  const updateTime = pretifyTime(new Date(newInfo.lastUpdate));
+  // create pretified time and date
+  const updateTime = pretifyTimeShort(new Date(newInfo.lastUpdate));
   const updateDate = pretifyDate(new Date(newInfo.lastUpdate));
+
+  // print '-' if reponse time is null
+  const responseTime = arrAverage(avgResTimes[name]);
+  const responseTimePrint = Number.isNaN(responseTime) ? '-' : responseTime;
 
   $(`#status-project-${name}`)
     .html(`<td>${name}</td>
@@ -119,7 +156,8 @@ function updateProject(name, newInfo) {
            <td class="${color}">${newInfo.status}</td>
            <td>${updateTime} ${updateDate}</td>
            <td>${newInfo.nOfLogins}</td>
-           <td>${newInfo.nOfAccounts}</td>`);
+           <td>${newInfo.nOfAccounts}</td>
+           <td>${responseTimePrint}`);
 
   $(`#logs-project-${name}`)
     .html(`<h3>${name}</h3>
@@ -134,38 +172,54 @@ function updateProject(name, newInfo) {
            </div>`);
 }
 
-const projects = [];
-
+/* Function pulls data from api and routes to chart and board */
 function updatePage() {
-  $.ajax({ url: 'http://localhost:3000/api/projects', success: (res) => {
-    console.log(res);
-    let cpuUsage = 0;
-    let memoryUsage = 0;
-    let requests = 0;
+  $.ajax({
+    url: 'http://localhost:3000/api/projects',
+    success: (res) => {
+      // create usage tallies
+      let cpuUsage = 0;
+      let memoryUsage = 0;
+      let requests = 0;
 
-    for (let project in res) {
-      if (res.hasOwnProperty(project)) {
-        cpuUsage = (res[project].cpuUsage);
-        memoryUsage = (res[project].memoryUsage);
-        requests = (res[project].nOfRequests);
-        if (projects.includes(project)) {
-          updateProject(project, res[project]);
+      // loop through every project
+      const newProjectNames = Object.keys(res);
+      for (let i = 0; i < newProjectNames.length; i += 1) {
+        const projectName = newProjectNames[i];
+
+        // if there are response times average and record them
+        if (res[projectName].responseTimes.length > 0) {
+          avgResTimes[projectName].push(arrAverage(res[projectName].responseTimes));
+        }
+
+        // tally usage data
+        cpuUsage += (res[projectName].cpuUsage);
+        memoryUsage += (res[projectName].memoryUsage);
+        requests += (res[projectName].nOfRequests);
+
+        // if project already displayed, update it, otherwise create project
+        if (projectNames.includes(projectName)) {
+          updateProject(projectName, res[projectName]);
         } else {
-          projects.push(project);
-          addProject(project, res[project]);
+          avgResTimes[projectName] = [];
+          projectNames.push(projectName);
+          addProject(projectName, res[projectName]);
         }
       }
-    }
-    console.log(cpuUsage, memoryUsage, requests);
-    showIncomingChartData(chart, pretifyTime(new Date()), cpuUsage, memoryUsage, requests);
-  }, error: (err) => {
-    console.error(err);
-  }});
+
+      // display usage data on graph
+      showIncomingChartData(chart, pretifyTime(new Date()), cpuUsage, memoryUsage, requests);
+    },
+    error: (err) => {
+      console.error(err); // eslint-disable-line
+    },
+  });
 }
 
+// when page loaded begin update loop
 $(document).ready(() => {
   updatePage();
   setInterval(() => {
     updatePage();
-  }, 10 * 1000);
+  }, UPDATEINTERVAL);
 });

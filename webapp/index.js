@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const Koa = require('koa');
 const serve = require('koa-static');
 const path = require('path');
@@ -9,6 +11,6 @@ app
   .use(serve(path.join(__dirname, '/public/')))
   .use(api.middleware());
 
-app.listen(3000);
+app.listen(process.env.PORT);
 
 console.log('listening on port 3000'); // eslint-disable-line
