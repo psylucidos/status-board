@@ -176,8 +176,8 @@ function updateProject(name, newInfo) {
 function updatePage() {
   $.ajax({
     url: 'http://localhost:3000/api/projects',
-    beforeSend: (request) => {
-      request.setRequestHeader('Access-Control-Allow-Origin', '*');
+    headers: {
+      'Access-Control-Allow-Origin': '*',
     },
     success: (res) => {
       // create usage tallies
