@@ -9,7 +9,9 @@ const app = new Koa();
 const api = require('./api');
 
 app
-  .use(cors())
+  .use(cors({
+    origin: '*',
+  }))
   .use(serve(path.join(__dirname, '/public/')))
   .use(api.middleware());
 
