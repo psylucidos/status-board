@@ -102,7 +102,11 @@ async function init(newConfig) {
     info.cpuUsage = prevCPUUsage.user / 100000;
     info.memoryUsage = process.memoryUsage().heapUsed / 1000 / 1000;
     axios
-      .post(`${config.target}/update/${config.projectName}`, info)
+      .post(`${config.target}/update/${config.projectName}`, info, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
       .catch((err) => {
         console.error(err); // eslint-disable-line
       });

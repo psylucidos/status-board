@@ -1,4 +1,4 @@
-/* global $, Chart */
+/* global $, Chart, env */
 
 const UPDATEINTERVAL = 60 * 1000;
 const CHARTLENGTH = 20;
@@ -175,7 +175,10 @@ function updateProject(name, newInfo) {
 /* Function pulls data from api and routes to chart and board */
 function updatePage() {
   $.ajax({
-    url: 'http://localhost:3000/api/projects',
+    url: `${env.APIURL}/api/projects`,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
     success: (res) => {
       // create usage tallies
       let cpuUsage = 0;
