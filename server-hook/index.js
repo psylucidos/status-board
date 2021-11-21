@@ -84,7 +84,7 @@ async function init(newConfig) {
     const cpuUsage = process.cpuUsage(prevCPUUsage);
     prevCPUUsage = cpuUsage; // store cpu usage to prevent cpu usage cumulating
 
-    info.cpuUsage = cpuUsage.user / 100000;
+    info.cpuUsage = cpuUsage.user / 1000 / 1000;
     info.memoryUsage = process.memoryUsage().heapUsed / 1000 / 1000;
 
     // post project info to webapp api
