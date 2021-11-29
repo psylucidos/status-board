@@ -50,6 +50,8 @@ setInterval(() => {
     const project = projectNames[i];
     if (projects[project].status === 'Online') {
       const target = projects[project];
+      console.log(target);
+      console.log('interval * 1000', target.interval * 1000);
       const minUpdateTime = (new Date().getTime() - (target.interval * 1000));
       if (target.lastUpdate < minUpdateTime + process.env.MAXTIMEOUT) {
         console.log('going offline');
