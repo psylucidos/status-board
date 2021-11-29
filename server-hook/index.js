@@ -11,7 +11,7 @@ const config = {
 const info = {
   nOfRequests: 0,
   nOfErrors: 0,
-  status: 'Online',
+  status: 'Offline',
   nOfLogins: 0,
   nOfAccounts: 0,
   logs: '',
