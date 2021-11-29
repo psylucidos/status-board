@@ -99,6 +99,10 @@ function arrAverage(arr) {
   return sum / arr.length;
 }
 
+function cleanName(name) {
+  return name.replace('.', '-');
+}
+
 /* Function adds project to board and displays status */
 function addProject(name, info) {
   const color = info.status === 'Online' ? 'green' : 'red';
@@ -112,7 +116,7 @@ function addProject(name, info) {
   const responseTimePrint = Number.isNaN(responseTime) ? '-' : responseTime;
 
   $('#project-status-table tr:last')
-    .after(`<tr id="status-project-${name}">
+    .after(`<tr id="status-project-${cleanName(name)}">
               <td>${name}</td>
               <td>${info.nOfRequests}</td>
               <td>${info.nOfErrors}</td>
@@ -124,7 +128,7 @@ function addProject(name, info) {
             </tr>`);
 
   $('#page')
-    .append(`<div class="container" id="logs-project-${name}">
+    .append(`<div class="container" id="logs-project-${cleanName(name)}">
               <h3>${name}</h3>
               <hr>
               <div class="child left">
@@ -149,7 +153,7 @@ function updateProject(name, newInfo) {
   const responseTime = arrAverage(avgResTimes[name]);
   const responseTimePrint = Number.isNaN(responseTime) ? '-' : responseTime;
 
-  $(`#status-project-${name}`)
+  $(`#status-project-${cleanName(name)}`)
     .html(`<td>${name}</td>
            <td>${newInfo.nOfRequests}</td>
            <td>${newInfo.nOfErrors}</td>
@@ -159,7 +163,7 @@ function updateProject(name, newInfo) {
            <td>${newInfo.nOfAccounts}</td>
            <td>${responseTimePrint}`);
 
-  $(`#logs-project-${name}`)
+  $(`#logs-project-${cleanName(name)}`)
     .html(`<h3>${name}</h3>
            <hr>
            <div class="child left">
