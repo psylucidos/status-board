@@ -51,7 +51,7 @@ setInterval(() => {
     if (projects[project].status === 'Online') {
       const target = projects[project];
       const minUpdateTime = (new Date().getTime() - (target.interval * 1000));
-      if (target.lastUpdate < minUpdateTime + process.env.MAXTIMEOUT) {
+      if (target.lastUpdate < minUpdateTime - process.env.MAXTIMEOUT) {
         projects[project].status = 'Offline';
       }
     }
