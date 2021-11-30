@@ -11,6 +11,7 @@
   "author": "psylucidos",
   "license": "MIT",
   "dependencies": {
+    "@koa/cors": "^3.1.0",
     "@koa/router": "^10.1.1",
     "dotenv": "^10.0.0",
     "koa": "^2.13.3",

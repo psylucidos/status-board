@@ -11,7 +11,7 @@ const config = {
 const info = {
   nOfRequests: 0,
   nOfErrors: 0,
-  status: 'Online',
+  status: 'Offline',
   nOfLogins: 0,
   nOfAccounts: 0,
   logs: '',
@@ -77,14 +77,10 @@ async function init(newConfig) {
     Promise.reject(new Error('No refresh interval provided!'));
   }
 
-  // define historical cpu usage
-  let prevCPUUsage = { user: 0, system: 0 };
+  let cpuUsage = process.cpuUsage();
 
   try {
-    const cpuUsage = process.cpuUsage(prevCPUUsage);
-    prevCPUUsage = cpuUsage; // store cpu usage to prevent cpu usage cumulating
-
-    info.cpuUsage = cpuUsage.user / 100000;
+    info.cpuUsage = cpuUsage.user / 1000 / 1000;
     info.memoryUsage = process.memoryUsage().heapUsed / 1000 / 1000;
 
     // post project info to webapp api
@@ -99,18 +95,21 @@ async function init(newConfig) {
 
   // on interval defined by config update webapp api with project info
   setInterval(() => {
-    info.cpuUsage = prevCPUUsage.user / 100000;
+    cpuUsage = process.cpuUsage(cpuUsage);
+    info.cpuUsage = cpuUsage.user / 1000 / 1000;
     info.memoryUsage = process.memoryUsage().heapUsed / 1000 / 1000;
     axios
-      .post(`${config.target}/update/${config.projectName}`, info)
+      .post(`${config.target}/update/${config.projectName}`, info, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
       .catch((err) => {
         console.error(err); // eslint-disable-line
       });
 
     info.nOfRequests = 0;
     info.responseTimes = [];
-    const cpuUsage = process.cpuUsage(prevCPUUsage);
-    prevCPUUsage = cpuUsage;
   }, config.interval * 1000);
   Promise.resolve();
 }
