@@ -113,7 +113,7 @@ function addProject(name, info) {
 
   // print '-' if reponse time is null
   const responseTime = arrAverage(avgResTimes[name]);
-  const responseTimePrint = Number.isNaN(responseTime) ? '-' : responseTime;
+  const responseTimePrint = Number.isNaN(responseTime) ? '-' : `${responseTime}ms`;
 
   $('#project-status-table tr:last')
     .after(`<tr id="status-project-${cleanName(name)}">
@@ -151,7 +151,7 @@ function updateProject(name, newInfo) {
 
   // print '-' if reponse time is null
   const responseTime = arrAverage(avgResTimes[name]);
-  const responseTimePrint = Number.isNaN(responseTime) ? '-' : responseTime;
+  const responseTimePrint = Number.isNaN(responseTime) ? '-' : `${responseTime}ms`;
 
   $(`#status-project-${cleanName(name)}`)
     .html(`<td>${name}</td>
@@ -161,7 +161,7 @@ function updateProject(name, newInfo) {
            <td>${updateTime} ${updateDate}</td>
            <td>${newInfo.nOfLogins}</td>
            <td>${newInfo.nOfAccounts}</td>
-           <td>${responseTimePrint}`);
+           <td>${responseTimePrint}</td>`);
 
   $(`#logs-project-${cleanName(name)}`)
     .html(`<h3>${name}</h3>
