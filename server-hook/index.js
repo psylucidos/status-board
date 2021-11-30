@@ -104,6 +104,15 @@ async function init(newConfig) {
           'Access-Control-Allow-Origin': '*',
         },
       })
+      .then((res) => {
+        // // TODO: FINISH THIS
+        // update info if error logs have been reset
+        if (res.body.logs === "") {
+          info.logs = "";
+        } if (res.body.errorLogs === "") {
+          info.errorLogs = "";
+        }
+      })
       .catch((err) => {
         console.error(err); // eslint-disable-line
       });

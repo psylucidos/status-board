@@ -46,7 +46,7 @@ router.route({
 
 router.route({
   method: 'post',
-  path: '/clear/:project/log',
+  path: '/clear/:project/logs',
   handler: async (ctx) => {
     const projectName = ctx.params.project;
     projects[projectName].logs = '';
@@ -56,10 +56,12 @@ router.route({
 
 router.route({
   method: 'post',
-  path: '/clear/:project/errs',
+  path: '/clear/:project/errors',
   handler: async (ctx) => {
     const projectName = ctx.params.project;
-    projects[projectName].errLogs = '';
+    console.log('errs', projectName);
+    projects[projectName].errorLogs = '';
+    console.log(projects);
     ctx.status = 200;
   },
 });

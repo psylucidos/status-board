@@ -1,8 +1,5 @@
 /* global $, Chart, env */
 
-const UPDATEINTERVAL = 60 * 1000;
-const CHARTLENGTH = 20;
-
 const data = {
   labels: [],
   datasets: [{
@@ -50,7 +47,7 @@ function showIncomingChartData(targetChart, time, cpu, ram, reqs) {
   const dataArr = [cpu, ram, reqs];
 
   addChartData(targetChart, time, dataArr);
-  if (targetChart.data.labels.length >= CHARTLENGTH) {
+  if (targetChart.data.labels.length >= env.CHARTLENGTH) {
     removeChartData(chart);
   }
 
@@ -129,6 +126,8 @@ function addProject(name, info) {
 
   $('#page')
     .append(`<div class="container" id="logs-project-${cleanName(name)}">
+              <button class="clear-errors-btn">Clear Errors</button>
+              <button class="clear-logs-btn">Clear Logs</button>
               <h3>${name}</h3>
               <hr>
               <div class="child left">
@@ -139,6 +138,28 @@ function addProject(name, info) {
                 <h4>Errors</h4>
                 <p class="log">${info.errorLogs}</p>
             </div>`);
+
+  $(`#logs-project-${cleanName(name)} .clear-errors-btn`).click(() => {
+    $.post({
+      url: `${env.APIURL}/api/clear/${name}/errors`,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+      success: (res) => {
+        $(`#logs-project-${cleanName(name)} .right .log`).html("");
+      }});
+  });
+
+  $(`#logs-project-${cleanName(name)} .clear-logs-btn`).click(() => {
+    $.post({
+      url: `${env.APIURL}/api/clear/${name}/logs`,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+      success: (res) => {
+        $(`#logs-project-${cleanName(name)} .left .log`).html("");
+      }});
+  })
 }
 
 /* Function updates project to board and displays status */
@@ -164,7 +185,9 @@ function updateProject(name, newInfo) {
            <td>${responseTimePrint}</td>`);
 
   $(`#logs-project-${cleanName(name)}`)
-    .html(`<h3>${name}</h3>
+    .html(`<button class="clear-errors-btn">Clear Errors</button>
+           <button class="clear-logs-btn">Clear Logs</button>
+           <h3>${name}</h3>
            <hr>
            <div class="child left">
              <h4>Logs</h4>
@@ -228,5 +251,5 @@ $(document).ready(() => {
   updatePage();
   setInterval(() => {
     updatePage();
-  }, UPDATEINTERVAL);
+  }, env.UPDATEINTERVAL);
 });
