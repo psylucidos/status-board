@@ -44,6 +44,26 @@ router.route({
   },
 });
 
+router.route({
+  method: 'post',
+  path: '/clear/:project/log',
+  handler: async (ctx) => {
+    const projectName = ctx.params.project;
+    projects[projectName].logs = '';
+    ctx.status = 200;
+  },
+});
+
+router.route({
+  method: 'post',
+  path: '/clear/:project/errs',
+  handler: async (ctx) => {
+    const projectName = ctx.params.project;
+    projects[projectName].errLogs = '';
+    ctx.status = 200;
+  },
+});
+
 setInterval(() => {
   const projectNames = Object.keys(projects);
   for (let i = 0; i < projectNames.length; i += 1) {
