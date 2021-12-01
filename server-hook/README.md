@@ -15,7 +15,7 @@ hook.init({ // initialise hook
 })
 
 app.on('error', err => {
-  hook.errLog(err);
+  hook.logErr(err);
 });
 
 app
@@ -59,7 +59,7 @@ Records number of user accounts.
 *msg*: `String`
 
 Records logged message and displays through console.log.
-#### .errLog(err)
+#### .logErr(err)
 *err*: `Error`
 
 Records logged error message and displays through console.error.
