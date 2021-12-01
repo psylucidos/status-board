@@ -10,12 +10,9 @@ const config = {
 // project info posted by server-hook
 const info = {
   nOfRequests: 0,
-  nOfErrors: 0,
   status: 'Offline',
   nOfLogins: 0,
   nOfAccounts: 0,
-  logs: '',
-  errorLogs: '',
   interval: 60,
   responseTimes: [],
 };
@@ -46,14 +43,33 @@ async function setAccounts(nOfAccounts) {
 
 /* Function used for logging console output */
 async function log(msg) {
-  info.logs += msg;
+  axios
+    .post(`${config.target}/add/${config.projectName}/log`, {
+      log: msg,
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+    })
+    .catch((err) => {
+      console.error(err); // eslint-disable-line
+    });
   console.log(msg); // eslint-disable-line
 }
 
 /* Function used for logging console error output */
 async function logErr(err) {
-  info.nOfErrors += 1;
-  info.errorLogs += `${err.stack}'\n`;
+  axios
+    .post(`${config.target}/add/${config.projectName}/error`, {
+      error: err.stack,
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+    })
+    .catch((postErr) => {
+      console.error(postErr); // eslint-disable-line
+    });
   console.error(err); // eslint-disable-line
 }
 
