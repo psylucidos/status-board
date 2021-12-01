@@ -8,6 +8,15 @@ const path = require('path');
 const app = new Koa();
 const api = require('./api');
 
+app.on('error', (err) => {
+  console.error(err);
+});
+
+app.use(async (ctx, next) => {
+  console.log(ctx.path);
+  await next();
+})
+
 app
   .use(cors({
     origin: '*',

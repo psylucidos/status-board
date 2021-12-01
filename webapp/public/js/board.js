@@ -116,7 +116,7 @@ function addProject(name, info) {
     .after(`<tr id="status-project-${cleanName(name)}">
               <td>${name}</td>
               <td>${info.nOfRequests}</td>
-              <td>${info.nOfErrors}</td>
+              <td class="n-of-errors">${info.nOfErrors}</td>
               <td class="${color}">${info.status}</td>
               <td>${updateTime} ${updateDate}</td>
               <td>${info.nOfLogins}</td>
@@ -126,8 +126,8 @@ function addProject(name, info) {
 
   $('#page')
     .append(`<div class="container" id="logs-project-${cleanName(name)}">
-              <button class="clear-errors-btn">Clear Errors</button>
-              <button class="clear-logs-btn">Clear Logs</button>
+              <button onclick="clearErrors('${name}')" class="clear-errors-btn">Clear Errors</button>
+              <button onclick="clearLogs('${name}')" class="clear-logs-btn">Clear Logs</button>
               <h3>${name}</h3>
               <hr>
               <div class="child left">
@@ -138,28 +138,6 @@ function addProject(name, info) {
                 <h4>Errors</h4>
                 <p class="log">${info.errorLogs}</p>
             </div>`);
-
-  $(`#logs-project-${cleanName(name)} .clear-errors-btn`).click(() => {
-    $.post({
-      url: `${env.APIURL}/api/clear/${name}/errors`,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      },
-      success: (res) => {
-        $(`#logs-project-${cleanName(name)} .right .log`).html("");
-      }});
-  });
-
-  $(`#logs-project-${cleanName(name)} .clear-logs-btn`).click(() => {
-    $.post({
-      url: `${env.APIURL}/api/clear/${name}/logs`,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      },
-      success: (res) => {
-        $(`#logs-project-${cleanName(name)} .left .log`).html("");
-      }});
-  })
 }
 
 /* Function updates project to board and displays status */
@@ -177,7 +155,7 @@ function updateProject(name, newInfo) {
   $(`#status-project-${cleanName(name)}`)
     .html(`<td>${name}</td>
            <td>${newInfo.nOfRequests}</td>
-           <td>${newInfo.nOfErrors}</td>
+           <td class="n-of-errors">${newInfo.nOfErrors}</td>
            <td class="${color}">${newInfo.status}</td>
            <td>${updateTime} ${updateDate}</td>
            <td>${newInfo.nOfLogins}</td>
@@ -185,8 +163,8 @@ function updateProject(name, newInfo) {
            <td>${responseTimePrint}</td>`);
 
   $(`#logs-project-${cleanName(name)}`)
-    .html(`<button class="clear-errors-btn">Clear Errors</button>
-           <button class="clear-logs-btn">Clear Logs</button>
+    .html(`<button onclick="clearErrors('${name}')" class="clear-errors-btn">Clear Errors</button>
+           <button onclick="clearLogs('${name}')" class="clear-logs-btn">Clear Logs</button>
            <h3>${name}</h3>
            <hr>
            <div class="child left">
@@ -197,6 +175,29 @@ function updateProject(name, newInfo) {
              <h4>Errors</h4>
              <p class="log">${newInfo.errorLogs}</p>
            </div>`);
+}
+
+function clearErrors(name) {
+  $.post({
+    url: `${env.APIURL}/api/clear/${name}/errors`,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    success: (res) => {
+      $(`#logs-project-${cleanName(name)} .right .log`).html("");
+      $(`#status-project-${cleanName(name)} .n-of-errors`).html("0");
+    }});
+}
+
+function clearLogs(name) {
+  $.post({
+    url: `${env.APIURL}/api/clear/${name}/logs`,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    success: (res) => {
+      $(`#logs-project-${cleanName(name)} .left .log`).html("");
+    }});
 }
 
 /* Function pulls data from api and routes to chart and board */
