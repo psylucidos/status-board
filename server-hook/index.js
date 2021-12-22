@@ -83,8 +83,8 @@ async function init(newConfig) {
   // handle misconfigurations
   if (!config.target) {
     Promise.reject(new Error('No target server specified!'));
-  } else if (!config.target.includes('http://')) {
-    Promise.reject(new Error('Target server not http, please use \'http://\' prefix!'));
+  } else if (!config.target.includes('https://')) {
+    Promise.reject(new Error('Specified target server not https, please use \'https://\' prefix!'));
   } else if (config.target[config.target.length - 1] === '/') {
     Promise.reject(new Error('Target server cannot end with \'/\'!'));
   } else if (!config.projectName) {
