@@ -1,6 +1,6 @@
 {
   "name": "server-hook",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Simple server status hook for status-board.",
   "main": "index.js",
   "scripts": {
